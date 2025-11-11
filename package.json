@@ -4,7 +4,7 @@
   "private": true,
   "homepage": "https://NazmusSakibShohan.github.io/sign-translator",
   "dependencies": {
-    "@mediapipe/tasks-vision": "latest",
+    "@mediapipe/tasks-vision": "^0.10.22-rc.20250304",
     "framer-motion": "latest",
     "lucide-react": "latest",
     "react": "^18.2.0",
