@@ -13,12 +13,14 @@ export default function SignToEnglishApp() {
         "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision/wasm"
       );
 
-      const gestureRecognizer = await GestureRecognizer.createFromOptions(vision, {
-        baseOptions: {
-          modelAssetPath: "/models/gesture_recognizer.task",
-        },
-        runningMode: "VIDEO",
-      });
+const modelPath = `${process.env.PUBLIC_URL || ""}/models/gesture_recognizer.task`;
+
+const gestureRecognizer = await GestureRecognizer.createFromOptions(vision, {
+  baseOptions: {
+    modelAssetPath: modelPath,
+  },
+  runningMode: "VIDEO",
+});
 
       setRecognizer(gestureRecognizer);
     }
