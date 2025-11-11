@@ -17,11 +17,13 @@ const SignTranslator = () => {
         "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision/wasm"
       );
 
+      const modelPath = `${process.env.PUBLIC_URL || ""}/models/gesture_recognizer.task`;
+      
       gestureRecognizerRef.current = await GestureRecognizer.createFromOptions(
         vision,
         {
           baseOptions: {
-            modelAssetPath: "/models/gesture_recognizer.task",
+            modelAssetPath: modelPath,
           },
           runningMode: "VIDEO",
         }
@@ -94,20 +96,23 @@ const SignTranslator = () => {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-black text-white">
-      <video
-        ref={videoRef}
-        width="640"
-        height="480"
-        className="rounded-2xl shadow-lg"
-        style={{ transform: "scaleX(-1)" }}
-      />
-      <canvas
-        ref={canvasRef}
-        width="640"
-        height="480"
-        className="absolute top-0"
-      ></canvas>
-      <h1 className="mt-5 text-2xl font-bold">
+      <div className="relative w-full max-w-2xl flex justify-center">
+        <video
+          ref={videoRef}
+          width="640"
+          height="480"
+          className="rounded-2xl shadow-lg w-full max-w-2xl"
+          style={{ transform: "scaleX(-1)", aspectRatio: "4/3" }}
+        />
+        <canvas
+          ref={canvasRef}
+          width="640"
+          height="480"
+          className="absolute top-0 left-0 rounded-2xl w-full"
+          style={{ display: "none" }}
+        ></canvas>
+      </div>
+      <h1 className="mt-8 text-4xl font-bold text-center px-4">
         {translatedText}
       </h1>
     </div>
