@@ -1,69 +1,111 @@
 import React, { useEffect, useRef, useState } from "react";
-import { GestureRecognizer, FilesetResolver } from "@mediapipe/tasks-vision";
+import {
+  FilesetResolver,
+  GestureRecognizer,
+  DrawingUtils,
+} from "@mediapipe/tasks-vision";
 
-export default function SignToEnglishApp() {
+const SignTranslator = () => {
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
-  const [recognizer, setRecognizer] = useState(null);
-  const [translatedText, setTranslatedText] = useState("");
+  const [translatedText, setTranslatedText] = useState("Detecting...");
+  const gestureRecognizerRef = useRef(null);
 
   useEffect(() => {
-    async function loadModel() {
+    const init = async () => {
       const vision = await FilesetResolver.forVisionTasks(
         "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision/wasm"
       );
 
-const modelPath = `${process.env.PUBLIC_URL || ""}/models/gesture_recognizer.task`;
+      gestureRecognizerRef.current = await GestureRecognizer.createFromOptions(
+        vision,
+        {
+          baseOptions: {
+            modelAssetPath: "/models/gesture_recognizer.task",
+          },
+          runningMode: "VIDEO",
+        }
+      );
 
-const gestureRecognizer = await GestureRecognizer.createFromOptions(vision, {
-  baseOptions: {
-    modelAssetPath: modelPath,
-  },
-  runningMode: "VIDEO",
-});
+      startCamera();
+    };
 
-      setRecognizer(gestureRecognizer);
-    }
-
-    loadModel();
-  }, []);
-
-  useEffect(() => {
-    async function enableCamera() {
-      if (!videoRef.current) return;
-
+    const startCamera = async () => {
       const stream = await navigator.mediaDevices.getUserMedia({ video: true });
       videoRef.current.srcObject = stream;
+      videoRef.current.play();
 
-      videoRef.current.onloadedmetadata = () => {
-        videoRef.current.play();
-        predictLoop();
-      };
+      requestAnimationFrame(detectGesture);
+    };
+
+    const detectGesture = async () => {
+      if (
+        !gestureRecognizerRef.current ||
+        !videoRef.current ||
+        videoRef.current.readyState < 2
+      ) {
+        requestAnimationFrame(detectGesture);
+        return;
+      }
+
+      const result = await gestureRecognizerRef.current.recognizeForVideo(
+        videoRef.current,
+        performance.now()
+      );
+
+      if (result.gestures.length > 0) {
+        const gesture = result.gestures[0][0].categoryName;
+        const meaning = getGestureMeaning(gesture);
+        setTranslatedText(meaning);
+      }
+
+      requestAnimationFrame(detectGesture);
+    };
+
+    init();
+  }, []);
+
+  const getGestureMeaning = (gesture) => {
+    switch (gesture) {
+      case "Thumb_Up":
+        return "👍 Thumb Up (Yes/Good)";
+      case "Thumb_Down":
+        return "👎 Thumb Down (No/Bad)";
+      case "Closed_Fist":
+        return "✊ Fist (Stop)";
+      case "Open_Palm":
+        return "🖐️ Open Palm (Hello)";
+      case "Pointing_Up":
+        return "☝️ Pointing Up (Attention)";
+      case "Victory":
+        return "✌️ Victory / Peace";
+      case "ILoveYou":
+        return "🤟 I Love You";
+      default:
+        return "Unknown Gesture";
     }
-
-    enableCamera();
-  }, [recognizer]);
-
-  async function predictLoop() {
-    if (!recognizer || !videoRef.current) return;
-
-    const video = videoRef.current;
-    const prediction = recognizer.recognizeForVideo(video, Date.now());
-
-    if (prediction.gestures.length > 0) {
-      const gesture = prediction.gestures[0][0].categoryName;
-      setTranslatedText(gesture);
-    }
-
-    requestAnimationFrame(predictLoop);
-  }
+  };
 
   return (
-    <div style={{ textAlign: "center", marginTop: "20px" }}>
-      <h1>🤟 Sign Language to English Translator</h1>
-      <video ref={videoRef} width="640" height="480" autoPlay muted playsInline></video>
-      <canvas ref={canvasRef} width="640" height="480" style={{ display: "none" }}></canvas>
-      <h2>📝 Translation: {translatedText}</h2>
+    <div className="flex flex-col items-center justify-center min-h-screen bg-black text-white">
+      <video
+        ref={videoRef}
+        width="640"
+        height="480"
+        className="rounded-2xl shadow-lg"
+        style={{ transform: "scaleX(-1)" }}
+      />
+      <canvas
+        ref={canvasRef}
+        width="640"
+        height="480"
+        className="absolute top-0"
+      ></canvas>
+      <h1 className="mt-5 text-2xl font-bold">
+        {translatedText}
+      </h1>
     </div>
   );
-}
+};
+
+export default SignTranslator;
