@@ -95,21 +95,24 @@ const SignTranslator = () => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-black text-white">
-      <video
-        ref={videoRef}
-        width="640"
-        height="480"
-        className="rounded-2xl shadow-lg"
-        style={{ transform: "scaleX(-1)" }}
-      />
-      <canvas
-        ref={canvasRef}
-        width="640"
-        height="480"
-        className="absolute top-0"
-      ></canvas>
-      <h1 className="mt-5 text-2xl font-bold">
+    <div className="flex flex-col items-center justify-center min-h-screen bg-black text-white p-4">
+      <div className="relative">
+        <video
+          ref={videoRef}
+          width="640"
+          height="480"
+          className="rounded-2xl shadow-lg block"
+          style={{ transform: "scaleX(-1)" }}
+        />
+        <canvas
+          ref={canvasRef}
+          width="640"
+          height="480"
+          className="absolute top-0 left-0 rounded-2xl"
+          style={{ display: "none" }}
+        ></canvas>
+      </div>
+      <h1 className="mt-6 text-3xl font-bold text-center">
         {translatedText}
       </h1>
     </div>
