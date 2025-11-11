@@ -67,22 +67,28 @@ const SignTranslator = () => {
 
   const getGestureMeaning = (gesture) => {
     switch (gesture) {
-      case "Thumb_Up":
-        return "👍 Thumb Up (Yes/Good)";
+     case "Thumb_Up":
+        return "👍 Thumb Up — Yes / Good";
       case "Thumb_Down":
-        return "👎 Thumb Down (No/Bad)";
+        return "👎 Thumb Down — No / Bad";
       case "Closed_Fist":
-        return "✊ Fist (Stop)";
+        return "✊ Fist — Stop / Power";
       case "Open_Palm":
-        return "🖐️ Open Palm (Hello)";
+        return "🖐️ Open Palm — Hello / Hi";
       case "Pointing_Up":
-        return "☝️ Pointing Up (Attention)";
+        return "☝️ Pointing Up — Attention / One";
       case "Victory":
-        return "✌️ Victory / Peace";
+        return "✌️ Victory — Peace / Two";
       case "ILoveYou":
-        return "🤟 I Love You";
+        return "🤟 I Love You — Love";
+      case "Rock":
+        return "🤘 Rock Sign — Cool / Rock On";
+      case "Raised_Back_Hand":
+        return "🤚 Raised Hand — Wait / Halt";
+      case "OK_Sign":
+        return "👌 OK Sign — Perfect";
       default:
-        return "Unknown Gesture";
+        return "🙌 Unknown Gesture";
     }
   };
 
