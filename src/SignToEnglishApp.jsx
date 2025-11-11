@@ -2,12 +2,10 @@ import React, { useEffect, useRef, useState } from "react";
 import {
   FilesetResolver,
   GestureRecognizer,
-  DrawingUtils,
 } from "@mediapipe/tasks-vision";
 
 const SignTranslator = () => {
   const videoRef = useRef(null);
-  const canvasRef = useRef(null);
   const [translatedText, setTranslatedText] = useState("Detecting...");
   const gestureRecognizerRef = useRef(null);
 
@@ -17,13 +15,11 @@ const SignTranslator = () => {
         "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision/wasm"
       );
 
-      const modelPath = `${process.env.PUBLIC_URL || ""}/models/gesture_recognizer.task`;
-      
       gestureRecognizerRef.current = await GestureRecognizer.createFromOptions(
         vision,
         {
           baseOptions: {
-            modelAssetPath: modelPath,
+            modelAssetPath: "/models/gesture_recognizer.task",
           },
           runningMode: "VIDEO",
         }
@@ -33,11 +29,14 @@ const SignTranslator = () => {
     };
 
     const startCamera = async () => {
-      const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-      videoRef.current.srcObject = stream;
-      videoRef.current.play();
-
-      requestAnimationFrame(detectGesture);
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+        videoRef.current.srcObject = stream;
+        videoRef.current.play();
+        requestAnimationFrame(detectGesture);
+      } catch (err) {
+        setTranslatedText("Camera access denied ❌");
+      }
     };
 
     const detectGesture = async () => {
@@ -59,6 +58,8 @@ const SignTranslator = () => {
         const gesture = result.gestures[0][0].categoryName;
         const meaning = getGestureMeaning(gesture);
         setTranslatedText(meaning);
+      } else {
+        setTranslatedText("Detecting...");
       }
 
       requestAnimationFrame(detectGesture);
@@ -69,7 +70,7 @@ const SignTranslator = () => {
 
   const getGestureMeaning = (gesture) => {
     switch (gesture) {
-     case "Thumb_Up":
+      case "Thumb_Up":
         return "👍 Thumb Up — Yes / Good";
       case "Thumb_Down":
         return "👎 Thumb Down — No / Bad";
@@ -95,26 +96,44 @@ const SignTranslator = () => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-black text-white">
-      <div className="relative w-full max-w-2xl flex justify-center">
-        <video
-          ref={videoRef}
-          width="640"
-          height="480"
-          className="rounded-2xl shadow-lg w-full max-w-2xl"
-          style={{ transform: "scaleX(-1)", aspectRatio: "4/3" }}
-        />
-        <canvas
-          ref={canvasRef}
-          width="640"
-          height="480"
-          className="absolute top-0 left-0 rounded-2xl w-full"
-          style={{ display: "none" }}
-        ></canvas>
-      </div>
-      <h1 className="mt-8 text-4xl font-bold text-center px-4">
-        {translatedText}
+    <div
+      style={{
+        backgroundColor: "#121212",
+        color: "white",
+        minHeight: "100vh",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        textAlign: "center",
+        padding: "20px",
+      }}
+    >
+      <h1 style={{ fontSize: "2.5rem", marginBottom: "20px", color: "#00bcd4" }}>
+        🤖 Real-Time Sign Language Translator
       </h1>
+
+      <video
+        ref={videoRef}
+        width="640"
+        height="480"
+        style={{
+          borderRadius: "15px",
+          boxShadow: "0px 0px 20px rgba(0, 188, 212, 0.5)",
+          transform: "scaleX(-1)",
+        }}
+      />
+
+      <h2
+        style={{
+          marginTop: "25px",
+          fontSize: "1.8rem",
+          fontWeight: "600",
+          color: "#4caf50",
+        }}
+      >
+        {translatedText}
+      </h2>
     </div>
   );
 };
