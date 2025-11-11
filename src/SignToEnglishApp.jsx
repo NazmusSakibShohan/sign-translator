@@ -17,11 +17,13 @@ const SignTranslator = () => {
         "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision/wasm"
       );
 
+      const modelPath = `${process.env.PUBLIC_URL || ""}/models/gesture_recognizer.task`;
+      
       gestureRecognizerRef.current = await GestureRecognizer.createFromOptions(
         vision,
         {
           baseOptions: {
-            modelAssetPath: "/models/gesture_recognizer.task",
+            modelAssetPath: modelPath,
           },
           runningMode: "VIDEO",
         }
