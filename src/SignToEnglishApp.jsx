@@ -11,22 +11,27 @@ const SignTranslator = () => {
 
   useEffect(() => {
     const init = async () => {
-      const vision = await FilesetResolver.forVisionTasks(
-        "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision/wasm"
-      );
+      try {
+        const vision = await FilesetResolver.forVisionTasks(
+          "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision/wasm"
+        );
 
-      gestureRecognizerRef.current = await GestureRecognizer.createFromOptions(
-        vision,
-        {
-          baseOptions: {
-                modelAssetPath:"https://storage.googleapis.com/mediapipe-assets/gesture_recognizer.task",
-              },
+        gestureRecognizerRef.current = await GestureRecognizer.createFromOptions(
+          vision,
+          {
+            baseOptions: {
+              modelAssetPath:"https://storage.googleapis.com/mediapipe-assets/gesture_recognizer.task",
+            },
 
-          runningMode: "VIDEO",
-        }
-      );
+            runningMode: "VIDEO",
+          }
+        );
 
-      startCamera();
+        startCamera();
+      } catch (error) {
+        console.error("Model load error:", error);
+        setTranslatedText("⚠️ Model loading failed!");
+      }
     };
 
     const startCamera = async () => {
@@ -97,16 +102,18 @@ const SignTranslator = () => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-black text-white">
-      <h1 className="text-3xl font-bold mb-3">🤖 Sign Language Translator</h1>
+    <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-b from-gray-900 via-black to-gray-950 text-white text-center">
+      <h1 className="text-4xl font-extrabold mb-6 text-green-400 drop-shadow-lg">
+        🤖 Real-Time Sign Language Translator
+      </h1>
       <video
         ref={videoRef}
         width="640"
         height="480"
-        className="rounded-2xl shadow-lg"
+        className="rounded-2xl shadow-2xl border-4 border-green-500"
         style={{ transform: "scaleX(-1)" }}
       />
-      <h2 className="mt-5 text-2xl font-semibold text-green-400">
+      <h2 className="mt-6 text-2xl font-semibold text-green-400 animate-pulse">
         {translatedText}
       </h2>
     </div>

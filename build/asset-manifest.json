@@ -1,10 +1,10 @@
 {
   "files": {
-    "main.js": "/sign-translator/static/js/main.c4334a79.js",
+    "main.js": "/sign-translator/static/js/main.71def5b9.js",
     "index.html": "/sign-translator/index.html",
-    "main.c4334a79.js.map": "/sign-translator/static/js/main.c4334a79.js.map"
+    "main.71def5b9.js.map": "/sign-translator/static/js/main.71def5b9.js.map"
   },
   "entrypoints": [
-    "static/js/main.c4334a79.js"
+    "static/js/main.71def5b9.js"
   ]
 }
