@@ -6,26 +6,31 @@ import {
 
 const SignTranslator = () => {
   const videoRef = useRef(null);
-  const [translatedText, setTranslatedText] = useState("Detecting...");
+  const [translatedText, setTranslatedText] = useState("Loading camera...");
   const gestureRecognizerRef = useRef(null);
 
   useEffect(() => {
     const init = async () => {
-      const vision = await FilesetResolver.forVisionTasks(
-        "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision/wasm"
-      );
+      try {
+        const vision = await FilesetResolver.forVisionTasks(
+          "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision/wasm"
+        );
 
-      gestureRecognizerRef.current = await GestureRecognizer.createFromOptions(
-        vision,
-        {
-          baseOptions: {
-            modelAssetPath: "/models/gesture_recognizer.task",
-          },
-          runningMode: "VIDEO",
-        }
-      );
+        gestureRecognizerRef.current = await GestureRecognizer.createFromOptions(
+          vision,
+          {
+            baseOptions: {
+              modelAssetPath: "/models/gesture_recognizer.task",
+            },
+            runningMode: "VIDEO",
+          }
+        );
 
-      startCamera();
+        startCamera();
+      } catch (error) {
+        console.error("Model load error:", error);
+        setTranslatedText("⚠️ Model loading failed!");
+      }
     };
 
     const startCamera = async () => {
@@ -59,7 +64,7 @@ const SignTranslator = () => {
         const meaning = getGestureMeaning(gesture);
         setTranslatedText(meaning);
       } else {
-        setTranslatedText("Detecting...");
+        setTranslatedText("No gesture detected...");
       }
 
       requestAnimationFrame(detectGesture);
@@ -96,42 +101,18 @@ const SignTranslator = () => {
   };
 
   return (
-    <div
-      style={{
-        backgroundColor: "#121212",
-        color: "white",
-        minHeight: "100vh",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
-        textAlign: "center",
-        padding: "20px",
-      }}
-    >
-      <h1 style={{ fontSize: "2.5rem", marginBottom: "20px", color: "#00bcd4" }}>
+    <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-b from-gray-900 via-black to-gray-950 text-white text-center">
+      <h1 className="text-4xl font-extrabold mb-6 text-green-400 drop-shadow-lg">
         🤖 Real-Time Sign Language Translator
       </h1>
-
       <video
         ref={videoRef}
         width="640"
         height="480"
-        style={{
-          borderRadius: "15px",
-          boxShadow: "0px 0px 20px rgba(0, 188, 212, 0.5)",
-          transform: "scaleX(-1)",
-        }}
+        className="rounded-2xl shadow-2xl border-4 border-green-500"
+        style={{ transform: "scaleX(-1)" }}
       />
-
-      <h2
-        style={{
-          marginTop: "25px",
-          fontSize: "1.8rem",
-          fontWeight: "600",
-          color: "#4caf50",
-        }}
-      >
+      <h2 className="mt-6 text-2xl font-semibold text-green-400 animate-pulse">
         {translatedText}
       </h2>
     </div>
