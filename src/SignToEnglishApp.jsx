@@ -20,9 +20,9 @@ const SignTranslator = () => {
           vision,
           {
             baseOptions: {
-              modelAssetPath:"https://storage.googleapis.com/mediapipe-assets/gesture_recognizer.task",
+              modelAssetPath:
+                "https://storage.googleapis.com/mediapipe-assets/gesture_recognizer.task",
             },
-
             runningMode: "VIDEO",
           }
         );
@@ -103,19 +103,21 @@ const SignTranslator = () => {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-b from-gray-900 via-black to-gray-950 text-white text-center">
-      <h1 className="text-4xl font-extrabold mb-6 text-green-400 drop-shadow-lg">
-        🤖 Real-Time Sign Language Translator
-      </h1>
-      <video
-        ref={videoRef}
-        width="640"
-        height="480"
-        className="rounded-2xl shadow-2xl border-4 border-green-500"
-        style={{ transform: "scaleX(-1)" }}
-      />
-      <h2 className="mt-6 text-2xl font-semibold text-green-400 animate-pulse">
-        {translatedText}
-      </h2>
+      <div className="flex flex-col items-center justify-center space-y-6">
+        <h1 className="text-4xl font-extrabold text-green-400 drop-shadow-lg">
+          🤖 Real-Time Sign Language Translator
+        </h1>
+        <video
+          ref={videoRef}
+          width="640"
+          height="480"
+          className="rounded-2xl shadow-2xl border-4 border-green-500"
+          style={{ transform: "scaleX(-1)" }}
+        />
+        <h2 className="text-2xl font-semibold text-green-400 animate-pulse mt-4">
+          {translatedText}
+        </h2>
+      </div>
     </div>
   );
 };
