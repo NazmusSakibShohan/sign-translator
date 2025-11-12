@@ -19,8 +19,9 @@ const SignTranslator = () => {
         vision,
         {
           baseOptions: {
-            modelAssetPath: "/models/gesture_recognizer.task",
-          },
+                modelAssetPath:"https://storage.googleapis.com/mediapipe-assets/gesture_recognizer.task",
+              },
+
           runningMode: "VIDEO",
         }
       );
