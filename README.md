@@ -1,6 +1,6 @@
 # Sign Translator
 
-This is a React-based Sign Language → English translator app using MediaPipe Tasks Vision.
+This is a React-based basic Sign Language translator app → [Click Here](https://nazmussakibshohan.github.io/sign-translator/)
 
 ## Run locally
 ```bash
